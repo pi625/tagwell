@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tagwell Checker</title>
+<meta name="description" content="Check tagged PDFs for reading order, headings, tables, lists, forms and alt text. Runs entirely in your browser.">
+<style>
+:root{--bg:#fbfaf7;--fg:#1d1d1b;--muted:#5d5b55;--card:#fff;--line:#dedad2;--accent:#3b4cca;--accent-fg:#fff;--err:#b42318}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#151514;--fg:#ecebe6;--muted:#a8a69f;--card:#1f1f1d;--line:#3a3935;--accent:#a6b0ff;--accent-fg:#151514;--err:#ff6b5e}}
+:root[data-theme="dark"]{--bg:#151514;--fg:#ecebe6;--muted:#a8a69f;--card:#1f1f1d;--line:#3a3935;--accent:#a6b0ff;--accent-fg:#151514;--err:#ff6b5e}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1100px;margin:0 auto;padding:32px 16px 64px}h1{font-size:28px;margin:0 0 6px}p{margin:0 0 10px}.muted{color:var(--muted)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;margin:16px 0}
+.drop{border:2px dashed var(--line);border-radius:12px;padding:28px;text-align:center}.drop.over{border-color:var(--accent)}
+button,.btn{background:var(--accent);color:var(--accent-fg);border:0;border-radius:10px;padding:10px 16px;font:inherit;font-weight:600;cursor:pointer;margin:6px 6px 0 0}
+button.alt{background:transparent;color:var(--fg);border:1px solid var(--line)}button:disabled{opacity:.5;cursor:default}
+#status{min-height:24px;font-weight:600}#status.err{color:var(--err)}
+iframe{width:100%;height:80vh;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+input[type=file]{max-width:100%}
+</style>
+</head>
+<body><main>
+<h1>Tagwell Checker</h1>
+<p class="muted">Checks tagged PDFs for what rule checkers miss: reading order, headings, tables, lists, form labels, alt text, page furniture.
+<b>Your files never leave this computer</b>: the checker runs inside your browser. (The checker's code is
+loaded from this site and the public jsDelivr CDN; your PDFs are not uploaded anywhere.)</p>
+<div class="card">
+  <div class="drop" id="drop">
+    <p><label for="files"><b>Choose PDF files</b></label> or drop them here.</p>
+    <input id="files" type="file" accept="application/pdf,.pdf" multiple>
+    <p><button id="run" disabled>Check</button></p>
+  </div>
+  <p style="margin-top:12px">No PDF handy? Try a fictional sample:
+    <button class="alt sample" data-f="02-parks-newsletter-two-column.pdf" disabled>Two-column newsletter</button>
+    <button class="alt sample" data-f="03-planning-agenda-auto-remediated.pdf" disabled>Auto-remediated agenda</button>
+    <button class="alt sample" data-f="07-fence-permit-form-broken.pdf" disabled>Broken form</button>
+    <button class="alt sample" data-f="01-council-minutes-well-tagged.pdf" disabled>Well-tagged minutes</button></p>
+  <p id="status" role="status" aria-live="polite">Loading the checker&hellip; (about 10 MB the first time)</p>
+  <p><button class="alt" id="json" disabled>Download JSON report</button></p>
+</div>
+<iframe id="out" title="Tagwell report" sandbox="allow-popups"></iframe>
+<p class="muted" style="font-size:14px">Tagwell reports evidence of accessibility defects that automated rule checkers don't test. It does not certify compliance with WCAG, PDF/UA, Section 508 or the ADA.</p>
+</main>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.1/full/pyodide.js"></script>
+<script>
+let py = null, lastJson = null;
+const $ = (id) => document.getElementById(id);
+function status(msg, err) { $("status").textContent = msg; $("status").className = err ? "err" : ""; }
+function ready(on) {
+  $("run").disabled = !on || !$("files").files.length;
+  document.querySelectorAll(".sample").forEach((b) => (b.disabled = !on));
+}
+async function boot() {
+  try {
+    py = await loadPyodide();
+    const buf = await (await fetch("tagwell.zip")).arrayBuffer();
+    py.unpackArchive(buf, "zip", { extractDir: "/home/pyodide/sr" });
+    py.runPython("import sys; sys.path.insert(0, '/home/pyodide/sr')\n" +
+      "from tagwell.engine import check_file\nfrom tagwell.report import render_html, render_json\n" +
+      "from tagwell import __version__");
+    status("Ready. Tagwell " + py.globals.get("__version__") + " is running in your browser.");
+    ready(true);
+  } catch (e) {
+    status("Could not load the checker: " + e, true);
+  }
+}
+async function check(items) {
+  ready(false);
+  status("Checking " + items.length + " file(s)…");
+  await new Promise((r) => setTimeout(r, 30));
+  try {
+    const paths = [];
+    for (const [i, it] of items.entries()) {
+      const safe = it.name.replace(/[^A-Za-z0-9._ -]/g, "_").slice(-120) || "file.pdf";
+      const p = "/tmp/" + i + "-" + safe;
+      py.FS.writeFile(p, it.bytes);
+      paths.push(p);
+    }
+    py.globals.set("paths", py.toPy(paths));
+    const t0 = performance.now();
+    const res = py.runPython(
+      "import os\nreports = [check_file(p) for p in paths]\n" +
+      "for r in reports: r.file = os.path.basename(r.file).split('-', 1)[-1]\n" +
+      "(render_html(reports, title='Tagwell report'), render_json(reports))").toJs();
+    for (const p of paths) py.FS.unlink(p);
+    $("out").srcdoc = res[0];
+    lastJson = res[1];
+    $("json").disabled = false;
+    const ms = performance.now() - t0;
+    status("Done in " + (ms < 1000 ? Math.max(1, Math.round(ms)) + " ms" : (ms / 1000).toFixed(1) + " s") + ". Report below.");
+  } catch (e) {
+    status("Something went wrong: " + e, true);
+  }
+  ready(true);
+}
+async function fromInputs(fileList) {
+  const items = [];
+  for (const f of fileList) items.push({ name: f.name, bytes: new Uint8Array(await f.arrayBuffer()) });
+  return items;
+}
+$("files").addEventListener("change", () => ready(!!py));
+$("run").addEventListener("click", async () => check(await fromInputs($("files").files)));
+document.querySelectorAll(".sample").forEach((b) => b.addEventListener("click", async () => {
+  const f = b.dataset.f;
+  const bytes = new Uint8Array(await (await fetch("samples/" + f)).arrayBuffer());
+  check([{ name: f, bytes }]);
+}));
+const drop = $("drop");
+drop.addEventListener("dragover", (e) => { e.preventDefault(); drop.classList.add("over"); });
+drop.addEventListener("dragleave", () => drop.classList.remove("over"));
+drop.addEventListener("drop", async (e) => {
+  e.preventDefault(); drop.classList.remove("over");
+  if (py) check(await fromInputs([...e.dataTransfer.files].filter((f) => /\.pdf$/i.test(f.name))));
+});
+$("json").addEventListener("click", () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([lastJson], { type: "application/json" }));
+  a.download = "tagwell-report.json";
+  a.click();
+});
+boot();
+</script>
+</body></html>
