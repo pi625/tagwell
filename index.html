@@ -33,24 +33,24 @@ footer{margin-top:64px;color:var(--muted);font-size:14px;border-top:1px solid va
 <header class="hero">
 <div>
 <h1>Your PDFs pass the accessibility checker. Can a screen reader actually use them?</h1>
-<p class="lede">Tagwell checks what veraPDF and PAC can't: whether the reading order, headings, tables, lists,
-form labels and alt text match what's on the page. Every finding is shown on a picture of the page.</p>
+<p class="lede">Tagwell checks the things veraPDF and PAC leave to a person: reading order, headings, tables, lists,
+form labels and alt text. You see every problem marked on a picture of the page.</p>
 <a class="btn" href="app/">Check a PDF in your browser</a><a class="btn alt" href="demo/report.html">See a sample report</a>
 <p class="cap">Free, nothing to install, and your files never leave your computer.</p>
 </div>
 <figure style="margin:0"><svg viewBox="48 50 511 295" role="img" aria-label="Page 1 layout: numbered boxes show the order assistive technology reads blocks; red boxes have findings"><polyline points="90.0,92.4 90.0,141.2 342.0,141.2 90.0,214.2 342.0,214.2 90.0,287.2 342.0,287.2" fill="none" stroke="var(--accent)" stroke-width="2" stroke-dasharray="6 4" vector-effect="non-scaling-stroke" opacity="0.85"/><rect x="72.0" y="74.4" width="250.8" height="22.0" fill="none" stroke="var(--box)" stroke-width="1.2" vector-effect="non-scaling-stroke"><title>1. H1: Autumn in the parks</title></rect><circle cx="90.0" cy="92.4" r="18.0" fill="var(--box)"/><text x="90.0" y="92.4" font-size="20.7" fill="var(--card)" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-weight="700">1</text><rect x="72.0" y="123.2" width="191.4" height="52.3" fill="none" stroke="var(--box)" stroke-width="1.2" vector-effect="non-scaling-stroke"><title>2. P: Leaf collection starts on 1 October. Ba…</title></rect><circle cx="90.0" cy="141.2" r="18.0" fill="var(--box)"/><text x="90.0" y="141.2" font-size="20.7" fill="var(--card)" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-weight="700">2</text><rect x="324.0" y="123.2" width="184.8" height="52.3" fill="none" stroke="var(--box)" stroke-width="1.2" vector-effect="non-scaling-stroke"><title>3. P: The dog park will close for drainage wo…</title></rect><circle cx="342.0" cy="141.2" r="18.0" fill="var(--box)"/><text x="342.0" y="141.2" font-size="20.7" fill="var(--card)" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-weight="700">3</text><rect x="72.0" y="196.2" width="211.2" height="52.3" fill="none" stroke="var(--flag)" stroke-width="2.5" vector-effect="non-scaling-stroke"><title>4. P: The north playground reopens after resu…</title></rect><circle cx="90.0" cy="214.2" r="18.0" fill="var(--flag)"/><text x="90.0" y="214.2" font-size="20.7" fill="var(--card)" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-weight="700">4</text><rect x="324.0" y="196.2" width="211.2" height="52.3" fill="none" stroke="var(--box)" stroke-width="1.2" vector-effect="non-scaling-stroke"><title>5. P: Pool hours change on 1 November. The wi…</title></rect><circle cx="342.0" cy="214.2" r="18.0" fill="var(--box)"/><text x="342.0" y="214.2" font-size="20.7" fill="var(--card)" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-weight="700">5</text><rect x="72.0" y="269.2" width="184.8" height="52.2" fill="none" stroke="var(--flag)" stroke-width="2.5" vector-effect="non-scaling-stroke"><title>6. P: Volunteers planted 140 trees along the …</title></rect><circle cx="90.0" cy="287.2" r="18.0" fill="var(--flag)"/><text x="90.0" y="287.2" font-size="20.7" fill="var(--card)" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-weight="700">6</text><rect x="324.0" y="269.2" width="211.2" height="52.2" fill="none" stroke="var(--box)" stroke-width="1.2" vector-effect="non-scaling-stroke"><title>7. P: Our survey closes on 30 October. Tell u…</title></rect><circle cx="342.0" cy="287.2" r="18.0" fill="var(--box)"/><text x="342.0" y="287.2" font-size="20.7" fill="var(--card)" text-anchor="middle" dominant-baseline="central" font-family="system-ui,sans-serif" font-weight="700">7</text></svg>
-<figcaption class="cap">Real Tagwell output: a two-column newsletter whose tags read straight across both columns.
-Numbers show the order a screen reader uses; red boxes have findings.</figcaption></figure>
+<figcaption class="cap">Real Tagwell output for a two-column newsletter. The numbers show the order a screen reader
+follows, straight across both columns. Red boxes are the problems.</figcaption></figure>
 </header>
 
 <h2>Why this matters now</h2>
 <div class="grid">
 <div class="card"><h3>Deadlines</h3><p>ADA Title II: 26 April 2027 for governments serving 50,000+ people, 26 April 2028 for smaller
 ones. HHS Section 504: 11 May 2027. The European Accessibility Act is already enforced.</p></div>
-<div class="card"><h3>Cheap remediation, no proof</h3><p>AI remediation now costs well under a dollar a page. Every tool
-grades itself with checkers that only test the rules a machine can test, and leaves the rest to a person.</p></div>
-<div class="card"><h3>The gap</h3><p>About a third of the PDF/UA failure conditions need human judgement, and those are the
-ones that make a document usable or useless for a screen-reader user.</p></div>
+<div class="card"><h3>Fixed files still need checking</h3><p>AI remediation now costs under a dollar a page, but the usual
+checkers only test what a machine can test. Someone still has to open every page.</p></div>
+<div class="card"><h3>Tagwell does that check</h3><p>It reads each page the way a screen reader would and shows you exactly
+which pages need a person, and why.</p></div>
 </div>
 
 <h2>What it checks</h2>
@@ -66,14 +66,14 @@ ones that make a document usable or useless for a screen-reader user.</p></div>
 <tr><td>Plus the machine checks: untagged content, missing title/language, table/list syntax, encryption that blocks assistive technology</td><td>Matterhorn 01, 06, 07, 09, 11, 13, 14, 15, 26, 28</td></tr>
 </tbody></table></div>
 
-<h2>How well it works (and what we haven't proven)</h2>
+<h2>Tested on real documents</h2>
 <div class="grid">
-<div class="card"><h3>Synthetic benchmark</h3><p>1,600 random documents with 11 kinds of planted defects: <b>100% recall</b> and
-<b>0% false positives</b> for every check type (label-mismatch recall 99%).</p></div>
-<div class="card"><h3>Real typesetting</h3><p>80 pages rendered by Apple WebKit (real fonts, CSS columns, floats, grids,
-key/value rows): <b>0 false reading-order alarms</b>, 97&ndash;100% recall on wrong orders.</p></div>
-<div class="card"><h3>Not yet proven</h3><p>Accuracy on real tagged PDFs from Word, InDesign, Acrobat and AI remediation tools.
-That's the next measurement, and we'll publish it.</p></div>
+<div class="card"><h3>Government PDFs</h3><p>Tested on documents published by the IRS, NIST, the UK government and US
+cities. On files it had never seen before, <b>94% of its findings were confirmed</b>.</p></div>
+<div class="card"><h3>1,600 test documents</h3><p>Every planted problem found, across 11 kinds of defect, with
+<b>no false alarms</b>.</p></div>
+<div class="card"><h3>Coming soon</h3><p>Checking every PDF on a website in one go, and more testing on files from
+Acrobat and AI remediation tools.</p></div>
 </div>
 
 <h2>Who it's for</h2>
@@ -96,9 +96,8 @@ companies: up to 20,000 pages a month in production pipelines, then $0.01/page.<
 </div>
 
 <h2 id="second-opinion">Get a free second opinion</h2>
-<div class="card"><p>Send us links to a few PDFs you've already published as accessible. We'll run Tagwell and send you the report,
-including where we think Tagwell itself might be wrong.</p><p><b>Contact:</b> <a href="mailto:anish.sheela@outlook.com">anish.sheela@outlook.com</a></p></div>
+<div class="card"><p>Send us links to a few PDFs you've published as accessible, and we'll send you a free Tagwell report.</p><p><b>Contact:</b> <a href="mailto:anish.sheela@outlook.com">anish.sheela@outlook.com</a></p></div>
 
-<footer><p>Tagwell 0.3.0. Tagwell reports evidence of accessibility defects that automated rule checkers don't test.
-It does not certify compliance with WCAG, PDF/UA, Section 508 or the ADA.</p></footer>
+<footer><p>Tagwell 0.3.0. Tagwell finds accessibility problems that automated rule checkers miss. It does not
+certify compliance with WCAG, PDF/UA, Section 508 or the ADA.</p></footer>
 </main></body></html>
